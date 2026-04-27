@@ -157,17 +157,21 @@
 
 <script>
     // --- נתוני הקמפיין ---
-    const raised = 79000;  
-    const target = 250000; 
+    const baseAmount = 36000;      // הסכום שכבר ניתן מראש
+    const raisedViaJGive = 43137; // כאן תעדכן את מה שמופיע באתר JGive
+    const target = 250000;         // יעד הגיוס הסופי
+
+    // חישוב הסכום הכולל
+    const totalRaised = baseAmount + raisedViaJGive;
 
     // --- הגדרות GitHub ---
     const user = "evyatar-memorial"; 
     const repo = "memorial";  
     const file = "index.html"; 
 
-    const percentage = Math.min((raised / target) * 100, 100).toFixed(1);
+    const percentage = Math.min((totalRaised / target) * 100, 100).toFixed(1);
 
-    document.getElementById('raised-amount').innerText = raised.toLocaleString();
+    document.getElementById('raised-amount').innerText = totalRaised.toLocaleString();
     document.getElementById('target-amount').innerText = target.toLocaleString();
     
     setTimeout(() => {
@@ -178,7 +182,6 @@
     async function fetchLastUpdate() {
         const updateElement = document.getElementById('last-update');
         try {
-            // טיימאאוט של 3 שניות כדי שלא ייתקע על "מעדכן נתונים"
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 3000);
 
@@ -200,7 +203,6 @@
                 updateElement.innerText = "עודכן לאחרונה: לפני מספר שעות";
             }
         } catch (error) {
-            // אם יש שגיאה (כולל טיימאאוט או חסימה), נציג טקסט גנרי מכובד
             updateElement.innerText = "עודכן לאחרונה: לפני מספר שעות";
         }
     }
