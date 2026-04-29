@@ -57,38 +57,41 @@
         
         <div class="amount-container">
             <span class="label">סך התרומות שנאספו עד כה:</span>
-            <span class="total-amount" id="raised">0</span>
+            <span class="total-amount" id="total-display">0</span>
         </div>
         
-        <div class="update-date" id="date">מעדכן תאריך...</div>
+        <div class="update-date" id="date-display">מעדכן תאריך...</div>
     </div>
 </div>
 
 <script>
-    // --- עדכן כאן את הסכום הכולל שנאסף ---
-    const totalRaised = 114000; 
-    // --------------------------------------
+    // --- עדכן כאן את הנתונים ---
+    const baseAmount = 36000;       // הסכום ההתחלתי הקבוע
+    const jgiveRaised = 78000;     // הסכום שנוסף מאז (אותו תעדכן ידנית)
+    // ----------------------------
 
-    document.getElementById('raised').innerText = totalRaised.toLocaleString() + ' ₪';
+    // חישוב והצגה
+    const finalTotal = baseAmount + jgiveRaised;
+    document.getElementById('total-display').innerText = finalTotal.toLocaleString() + ' ₪';
 
-    // משיכת תאריך עדכון מה-Commit בגיטהאב
-    async function updateDate() {
+    // משיכת תאריך עדכון אוטומטי מ-GitHub
+    async function fetchUpdateDate() {
         try {
             const res = await fetch('https://api.github.com/repos/eranshak/memorial/commits?path=index.html&per_page=1');
             const data = await res.json();
             if (data && data.length > 0) {
-                const date = new Date(data[0].commit.committer.date).toLocaleString('he-IL', {
+                const commitDate = new Date(data[0].commit.committer.date).toLocaleString('he-IL', {
                     day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', timeZone:'Asia/Jerusalem'
                 });
-                document.getElementById('date').innerText = `עודכן לאחרונה: ${date}`;
+                document.getElementById('date-display').innerText = `עודכן לאחרונה: ${commitDate}`;
             } else {
-                document.getElementById('date').innerText = "עודכן לאחרונה: היום";
+                document.getElementById('date-display').innerText = "עודכן לאחרונה: היום";
             }
         } catch(e) {
-            document.getElementById('date').innerText = "עודכן לאחרונה: היום";
+            document.getElementById('date-display').innerText = "עודכן לאחרונה: היום";
         }
     }
-    updateDate();
+    fetchUpdateDate();
 </script>
 
 </body>
